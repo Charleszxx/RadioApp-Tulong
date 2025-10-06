@@ -55,15 +55,13 @@ wss.on("connection", (ws) => {
 
     if (data.type === "sos" && ws.frequency) {
       wss.clients.forEach(client => {
-        if (
-          client !== ws && // exclude sender
-          client.readyState === ws.OPEN &&
-          client.frequency === ws.frequency
-        ) {
-          // Send SOS to other clients (modal + message)
-          client.send(JSON.stringify({ type: "sos", text: data.text, name: ws.name }));
-    
-          // Trigger SOS sound playback
+        if (client !== ws && client.readyState === ws.OPEN && client.frequency === ws.frequency) {
+          client.send(JSON.stringify({
+            type: "sos",
+            name: ws.name,
+            lat: data.lat,
+            lng: data.lng
+          }));
           client.send(JSON.stringify({ type: "sos-sound" }));
         }
       });
