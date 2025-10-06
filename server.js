@@ -89,7 +89,7 @@ wss.on("connection", (ws) => {
 
     if (data.type === "photo" && ws.frequency) {
       wss.clients.forEach(client => {
-        if (client !== ws && client.readyState === ws.OPEN && client.frequency === ws.frequency) {
+        if (client.readyState === ws.OPEN && client.frequency === ws.frequency) {
           client.send(JSON.stringify({
             type: "photo",
             name: ws.name,
