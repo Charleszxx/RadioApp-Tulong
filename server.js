@@ -20,13 +20,23 @@ wss.on("connection", (ws) => {
 
     if (data.type === "join") {
       ws.frequency = data.frequency;
-      ws.send(JSON.stringify({ type: "system", text: `Tuned to frequency ${data.frequency}` }));
+      ws.name = data.name || "Anonymous";
+    
+      // Send to self
+      ws.send(JSON.stringify({ type: "system", text: `Tuned to ${data.frequency}` }));
+    
+      // Broadcast join
+      wss.clients.forEach(client => {
+        if (client !== ws && client.readyState === ws.OPEN && client.frequency === ws.frequency) {
+          client.send(JSON.stringify({ type: "system", text: `${ws.name} has joined the channel.` }));
+        }
+      });
     }
 
     if (data.type === "message" && ws.frequency) {
       wss.clients.forEach(client => {
         if (client.readyState === ws.OPEN && client.frequency === ws.frequency) {
-          client.send(JSON.stringify({ type: "chat", text: data.text }));
+          client.send(JSON.stringify({ type: "chat", text: `${ws.name}: ${data.text}` }));
         }
       });
     }
@@ -61,7 +71,13 @@ wss.on("connection", (ws) => {
   });
 
   ws.on("close", () => {
-    console.log("A user disconnected");
+    if (ws.frequency && ws.name) {
+      wss.clients.forEach(client => {
+        if (client !== ws && client.readyState === ws.OPEN && client.frequency === ws.frequency) {
+          client.send(JSON.stringify({ type: "system", text: `${ws.name} has left the channel.` }));
+        }
+      });
+    }
   });
 });
 
