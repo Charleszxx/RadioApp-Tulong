@@ -68,6 +68,24 @@ wss.on("connection", (ws) => {
         }
       });
     }
+
+    if (data.type === "start-speaking" && ws.frequency) {
+      // Notify others that this user is speaking
+      wss.clients.forEach(client => {
+        if (client !== ws && client.readyState === ws.OPEN && client.frequency === ws.frequency) {
+          client.send(JSON.stringify({ type: "user-speaking", name: ws.name }));
+        }
+      });
+    }
+    
+    if (data.type === "stop-speaking" && ws.frequency) {
+      // Notify others that this user stopped speaking
+      wss.clients.forEach(client => {
+        if (client !== ws && client.readyState === ws.OPEN && client.frequency === ws.frequency) {
+          client.send(JSON.stringify({ type: "user-stopped-speaking" }));
+        }
+      });
+    }
   });
 
   ws.on("close", () => {
