@@ -23,32 +23,8 @@
   },
   "devDependencies": {
     "nodemon": "^3.1.0"
-  }
-}
-{
-  "name": "frequency-radio",
-  "version": "1.0.0",
-  "description": "A Node.js WebSocket-based radio app where users can join frequency rooms (like 100.1, 101.5, etc.) and stream audio in real-time.",
-  "main": "server.js",
-  "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js"
   },
-  "keywords": [
-    "websocket",
-    "radio",
-    "frequency",
-    "nodejs",
-    "audio-stream"
-  ],
-  "author": "Charleszxx",
-  "license": "MIT",
-  "dependencies": {
-    "express": "^4.19.2",
-    "ws": "^8.18.0",
-    "uuid": "^9.0.1"
-  },
-  "devDependencies": {
-    "nodemon": "^3.1.0"
+  "engines": {
+    "node": "18.x"
   }
 }
