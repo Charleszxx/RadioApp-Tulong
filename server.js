@@ -60,8 +60,8 @@ wss.on("connection", (ws) => {
           client.readyState === ws.OPEN &&
           client.frequency === ws.frequency
         ) {
-          // Send location message
-          client.send(JSON.stringify({ type: "chat", text: data.text }));
+          // Send SOS to other clients (modal + message)
+          client.send(JSON.stringify({ type: "sos", text: data.text, name: ws.name }));
     
           // Trigger SOS sound playback
           client.send(JSON.stringify({ type: "sos-sound" }));
