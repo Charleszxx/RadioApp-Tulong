@@ -45,8 +45,16 @@ wss.on("connection", (ws) => {
 
     if (data.type === "sos" && ws.frequency) {
       wss.clients.forEach(client => {
-        if (client.readyState === ws.OPEN && client.frequency === ws.frequency) {
+        if (
+          client !== ws && // exclude sender
+          client.readyState === ws.OPEN &&
+          client.frequency === ws.frequency
+        ) {
+          // Send location message
           client.send(JSON.stringify({ type: "chat", text: data.text }));
+    
+          // Trigger SOS sound playback
+          client.send(JSON.stringify({ type: "sos-sound" }));
         }
       });
     }
