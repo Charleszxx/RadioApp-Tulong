@@ -42,6 +42,14 @@ wss.on("connection", (ws) => {
         }
       });
     }
+
+    if (data.type === "sos" && ws.frequency) {
+      wss.clients.forEach(client => {
+        if (client.readyState === ws.OPEN && client.frequency === ws.frequency) {
+          client.send(JSON.stringify({ type: "chat", text: data.text }));
+        }
+      });
+    }
   });
 
   ws.on("close", () => {
